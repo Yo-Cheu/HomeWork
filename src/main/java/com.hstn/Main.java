@@ -1,51 +1,71 @@
-
 package com.hstn;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Dog dog1 = new Dog("Бобик");
-        Dog dog2 = new Dog("Шарик");
-
-        Cat[] cats = {
-                new Cat("Барсик"),
-                new Cat("Мурзик"),
-                new Cat("Рыжик")
+        String[][] array = {
+                {"1", "2", "3", "4"},
+                {"5", "6", "7", "8"},
+                {"9", "10", "11", "12"},
+                {"13", "14", "15", "16"}
         };
 
-        dog1.run(150);
-        dog1.run(600);
-        dog1.swim(10);
-        dog1.swim(20);
+        try {
+            int sum = sumArray(array);
 
-        cats[0].run(150);
-        cats[0].run(250);
-        cats[0].swim(10);
+            System.out.println("Сумма элементов массива: " + sum);
 
-        Bowl bowl = new Bowl(25);
+        } catch (MyArraySizeException e) {
+            System.out.println("Ошибка размера массива: " + e.getMessage());
 
-        for (Cat cat : cats) {
-            cat.eat(bowl, 10);
+        } catch (MyArrayDataException e) {
+            System.out.println("Ошибка данных массива: " + e.getMessage());
         }
 
-        System.out.println("\nСостояние котов:");
+        System.out.println("\nПроверка ArrayIndexOutOfBoundsException:");
 
-        for (Cat cat : cats) {
-            cat.checkSatiety();
+        try {
+            System.out.println(array[5][0]);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Ошибка: выход за границы массива!");
+        }
+    }
+
+
+    public static int sumArray(String[][] array) {
+
+        if (array.length != 4) {
+            throw new MyArraySizeException(
+                    "Массив должен иметь 4 строки!"
+            );
         }
 
-        System.out.println("\nОстаток еды: " + bowl.getFood());
+        int sum = 0;
 
-        bowl.addFood(20);
+        for (int i = 0; i < array.length; i++) {
 
-        for (Cat cat : cats) {
-            cat.eat(bowl, 10);
+            if (array[i].length != 4) {
+                throw new MyArraySizeException(
+                        "Массив должен иметь 4 столбца!"
+                );
+            }
+
+            for (int j = 0; j < array[i].length; j++) {
+
+                try {
+                    sum += Integer.parseInt(array[i][j]);
+
+                } catch (NumberFormatException e) {
+                    throw new MyArrayDataException(
+                            "Неверные данные в ячейке [" +
+                                    i + "][" + j + "]: " + array[i][j]
+                    );
+                }
+            }
         }
 
-        System.out.println("\nСтатистика:");
-        System.out.println("Всего животных: " + Animal.getAnimalCount());
-        System.out.println("Собак: " + Dog.getDogCount());
-        System.out.println("Котов: " + Cat.getCatCount());
+        return sum;
     }
 }
